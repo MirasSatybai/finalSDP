@@ -2,68 +2,7 @@ package main
 
 import "fmt"
 
-func weaponToWarrior() {
-	weaponFactory, _ := getWeaponFactory("melee")
-	arturs := weaponFactory.setWeapon()
-	println("I take weapon :", arturs.getName(), " with damage", arturs.getDamage())
-}
-
-func weaponToWizard() {
-	weaponFactory, _ := getWeaponFactory("ranged")
-	arturs := weaponFactory.setWeapon()
-	println("I take weapon :", arturs.getName(), " with damage", arturs.getDamage())
-}
-
-func createMount() {
-
-}
-
-func mountWithSaddle() *petWithSaddle {
-	mount := &pet{}
-	mountWithSaddle := &petWithSaddle{
-		mount: mount,
-	}
-	return mountWithSaddle
-}
-
-func mountWithSaddleAndArmor() *petWithSaddleAndArmor {
-	mount := &pet{}
-
-	mountWithSaddle := &petWithSaddle{
-		mount: mount,
-	}
-
-	mountWithSaddleAndArmor := &petWithSaddleAndArmor{
-		mount: mountWithSaddle.mount,
-	}
-
-	return mountWithSaddleAndArmor
-}
-
-func mountWithoutEquip() *pet {
-	return &pet{}
-}
-
-func createWarrior() {
-	warriorOfRadiant := &warriorOfRadiant{}
-	artur := &warrior{}
-	artur.setCharacter(warriorOfRadiant)
-}
-
-func getWarrior() *warrior {
-	return &warrior{}
-}
-
-func createWizard() {
-	wizardOfDire := &wizardOfDire{}
-	merlin := &wizard{}
-	merlin.setCharacter(wizardOfDire)
-}
-
-func getWizard() *wizard {
-	return &wizard{}
-}
-
+//bridge
 type actions interface {
 	attack()
 	def()
@@ -136,6 +75,7 @@ func (w *warriorOfRadiant) defence() {
 	fmt.Println(" I`m use shild")
 }
 
+//observer
 type game interface {
 	typeName(Observer observer)
 	exit(Observer observer)
@@ -170,10 +110,6 @@ func (p *pet) notifyAll() {
 	}
 }
 
-func (p *pet) mountСonvenience() int {
-	return 10
-}
-
 type observer interface {
 	update(string)
 	getPlayerName() string
@@ -191,8 +127,21 @@ func (pl *player) getPlayerName() string {
 	return pl.playerName
 }
 
+func checkMountState() {
+	player := player{
+		"user",
+	}
+	player.update("mount")
+	main()
+}
+
+//decorator
 type mount interface {
 	mountСonvenience() int
+}
+
+func (p *pet) mountСonvenience() int {
+	return 10
 }
 
 type petWithSaddle struct {
@@ -213,6 +162,7 @@ func (p *petWithSaddleAndArmor) mountConvenience() int {
 	return mountConv - 10
 }
 
+//factory
 type iWeaponFactory interface {
 	setWeapon() iWeapone
 }
@@ -288,23 +238,152 @@ type meleeForm struct {
 
 func main() {
 	index := 0
-	fmt.Println("Welcome! please choose option:")
+	fmt.Println(" Please, choose option:")
 	fmt.Println("1. Create warrior")
 	fmt.Println("2. Create wizard")
 	fmt.Println("3. Create mount")
+	fmt.Println("4. Check mount state")
 	fmt.Scan(&index)
 
 	if index == 1 {
 		createWarrior()
 		weaponToWarrior()
+		index := 0
+		fmt.Println("Choose action :")
+		fmt.Println("1. Create wizard")
+		fmt.Println("2. Create mount")
+		fmt.Println("3. exit")
+		fmt.Scan(&index)
 
+		if index == 1 {
+			createWizard()
+			weaponToWizard()
+		}
+
+		if index == 2 {
+			createMount()
+		}
+		if index == 3 {
+			main()
+		}
 	}
 	if index == 2 {
 		createWizard()
 		weaponToWizard()
+		index := 0
+		fmt.Println("Choose action :")
+		fmt.Println("1. Create warrior")
+		fmt.Println("2. Create mount")
+		fmt.Println("3. exit")
+		fmt.Scan(&index)
+
+		if index == 1 {
+			createWarrior()
+			weaponToWarrior()
+		}
+
+		if index == 2 {
+			createMount()
+		}
+		if index == 3 {
+			main()
+		}
 	}
 
 	if index == 3 {
-
+		createMount()
 	}
+
+	if index == 4 {
+		checkMountState()
+	}
+}
+
+func weaponToWarrior() {
+	weaponFactory, _ := getWeaponFactory("melee")
+	arturs := weaponFactory.setWeapon()
+	println("I take weapon :", arturs.getName(), " with damage", arturs.getDamage())
+}
+
+func weaponToWizard() {
+	weaponFactory, _ := getWeaponFactory("ranged")
+	arturs := weaponFactory.setWeapon()
+	println("I take weapon :", arturs.getName(), " with damage", arturs.getDamage())
+}
+
+func createMount() {
+	fmt.Println("Choose mount :")
+	fmt.Println("1. mount without anything")
+	fmt.Println("2. mount with saddle")
+	fmt.Println("3. mount with saddle and armor")
+	fmt.Println("4.exit")
+	index := 0
+	fmt.Scan(&index)
+	if index == 1 {
+		mountWithoutEquip()
+	}
+
+	if index == 2 {
+		mountWithSaddle()
+	}
+
+	if index == 3 {
+		mountWithSaddleAndArmor()
+	}
+
+	if index == 4 {
+		main()
+	}
+}
+
+func mountWithSaddle() *petWithSaddle {
+	mount := &pet{}
+	mountWithSaddle := &petWithSaddle{
+		mount: mount,
+	}
+	main()
+	return mountWithSaddle
+}
+
+func mountWithSaddleAndArmor() *petWithSaddleAndArmor {
+	mount := &pet{}
+
+	mountWithSaddle := &petWithSaddle{
+		mount: mount,
+	}
+
+	mountWithSaddleAndArmor := &petWithSaddleAndArmor{
+		mount: mountWithSaddle.mount,
+	}
+	main()
+	return mountWithSaddleAndArmor
+}
+
+func mountWithoutEquip() *pet {
+	main()
+	return &pet{}
+}
+
+func createWarrior() {
+	warriorOfRadiant := &warriorOfRadiant{}
+	artur := &warrior{}
+	artur.setCharacter(warriorOfRadiant)
+	artur.attack()
+	artur.def()
+}
+
+func getWarrior() *warrior {
+	return &warrior{}
+}
+
+func createWizard() {
+	wizardOfDire := &wizardOfDire{}
+	merlin := &wizard{}
+	merlin.setCharacter(wizardOfDire)
+	merlin.attack()
+	merlin.def()
+}
+
+func getWizard() *wizard {
+	return &wizard{}
 }
